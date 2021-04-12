@@ -18,9 +18,6 @@ start:
 	lgdt [gdt64.desc] ;[gdt64.pointer]
 
     push ebx
-    push gdt64.code
-    push gdt64.data
-    mov edi, esp
 	jmp gdt64.code:long_mode_start
 	hlt
 
