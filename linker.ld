@@ -11,7 +11,7 @@ SECTIONS
 
 	.text :
 	{
-        KEEP(*(.entry)) /* Won't boot otherwise i put the loading code in .entry and include it here */
+        KEEP(*(.entry)) /* Put the loading code before everything else. Won't boot otherwise*/
 		*(.text)
 	}
 }
