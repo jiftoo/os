@@ -2,28 +2,33 @@
 
 #include "types.h"
 
+#define NUM_COLS 80
+#define NUM_ROWS 25
+
 enum
 {
-    PRINT_COLOR_BLACK = 0,
-    PRINT_COLOR_BLUE = 1,
-    PRINT_COLOR_GREEN = 2,
-    PRINT_COLOR_CYAN = 3,
-    PRINT_COLOR_RED = 4,
-    PRINT_COLOR_MAGENTA = 5,
-    PRINT_COLOR_BROWN = 6,
-    PRINT_COLOR_LIGHT_GRAY = 7,
-    PRINT_COLOR_DARK_GRAY = 8,
-    PRINT_COLOR_LIGHT_BLUE = 9,
-    PRINT_COLOR_LIGHT_GREEN = 10,
-    PRINT_COLOR_LIGHT_CYAN = 11,
-    PRINT_COLOR_LIGHT_RED = 12,
-    PRINT_COLOR_PINK = 13,
-    PRINT_COLOR_YELLOW = 14,
-    PRINT_COLOR_WHITE = 15,
+    COLOR_BLACK = 0,
+    COLOR_BLUE = 1,
+    COLOR_GREEN = 2,
+    COLOR_CYAN = 3,
+    COLOR_RED = 4,
+    COLOR_MAGENTA = 5,
+    COLOR_BROWN = 6,
+    COLOR_LIGHT_GRAY = 7,
+    COLOR_DARK_GRAY = 8,
+    COLOR_LIGHT_BLUE = 9,
+    COLOR_LIGHT_GREEN = 10,
+    COLOR_LIGHT_CYAN = 11,
+    COLOR_LIGHT_RED = 12,
+    COLOR_PINK = 13,
+    COLOR_YELLOW = 14,
+    COLOR_WHITE = 15,
 };
 
 void ClearScreen();
+void ResetCursor();
 void PutChar(Char Character);
 void Print(Char *string);
 void Println(Char *string);
 void SetPrintColor(UByte foreground, UByte background);
+void ScreenColor(UByte color);

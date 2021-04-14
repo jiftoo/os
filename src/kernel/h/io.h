@@ -7,4 +7,7 @@ void SerialPrint(Char *str);
 void SerialPrintln(Char *str);
 void SerialChar(Char ch);
 
+Bool InitPalette();
+void PrintPalette();
+
 Bool InitSerial();

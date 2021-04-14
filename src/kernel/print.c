@@ -1,9 +1,6 @@
 #include "print.h"
 #include "io.h"
 
-static const size_t NUM_COLS = 80;
-static const size_t NUM_ROWS = 25;
-
 struct TermChar
 {
     UByte character;
@@ -13,7 +10,7 @@ struct TermChar
 struct TermChar *buffer = (struct TermChar *)0xb8000;
 size_t col = 0;
 size_t row = 0;
-UByte color = PRINT_COLOR_WHITE | PRINT_COLOR_BLACK << 4;
+UByte color = COLOR_WHITE | COLOR_BLACK << 4;
 
 void ClearRow(size_t row)
 {
@@ -34,6 +31,12 @@ void ClearScreen()
     {
         ClearRow(i);
     }
+}
+
+void ResetCursor()
+{
+    col = 0;
+    row = 0;
 }
 
 void PutNewline()
@@ -115,4 +118,12 @@ void Println(Char *str)
 void SetPrintColor(UByte foreground, UByte background)
 {
     color = foreground + (background << 4);
+}
+
+void ScreenColor(UByte color)
+{
+    for (Size i = 0; i < NUM_ROWS * NUM_COLS; i++)
+    {
+        buffer[i].color |= color << 4;
+    }
 }

@@ -15,13 +15,19 @@ static inline void cpuid(int code, uint32_t *a, uint32_t *d)
                  : "ecx", "ebx");
 }
 
-void kmain() // multiboot_info_t info
+void __attribute__((noreturn)) kmain() // multiboot_info_t info
 {
+    SetPrintColor(COLOR_WHITE, COLOR_CYAN);
     ClearScreen();
 
     BRANCH(InitSerial(), Println("SERIAL INIT OK");, Println("SERIAL INIT FAIL"););
     BRANCH(InitInterrupts(), Println("INTERRUPT INIT OK");, Println("INTERRUPT INIT FAIL"););
+    InitPalette();
+    PrintPalette();
 
-    SetPrintColor(PRINT_COLOR_LIGHT_GREEN, PRINT_COLOR_BLACK);
+    SetPrintColor(COLOR_LIGHT_GREEN, COLOR_CYAN);
     Println("IDLE");
+
+    while (1)
+        asm volatile("hlt");
 }

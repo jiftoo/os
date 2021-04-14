@@ -18,6 +18,89 @@ void OutByte(UShort port, UByte data)
     asm volatile("outb %0, %1" ::"a"(data), "Nd"(port));
 }
 
+// ---------------- PALETTE ---------------- //
+
+typedef struct PaletteColor
+{
+    UByte red;
+    UByte green;
+    UByte blue;
+} __attribute__((packed)) PaletteColor;
+
+Char *colornames[] = {
+    "black",
+    "blue",
+    "green",
+    "cyan",
+    "red",
+    "magenta",
+    "brown",
+    "light gray",
+    "dark gray",
+    "light blue",
+    "light green",
+    "light cyan",
+    "light red",
+    "light magenta ",
+    "yellow",
+    "white",
+};
+
+PaletteColor colors[16] = {
+    {1, 1, 1},    /* black */
+    {10, 10, 42},   /* blue */
+    {1, 32, 1},   /* green */
+    {0, 38, 55}, /* cyan */
+    {42, 0, 0}, /* red */
+    {32, 1, 32},  /* magenta */
+    {16, 16, 1},  /* brown */
+    {32, 32, 32}, /* light gray */
+    {16, 16, 16}, /* dark gray */
+    {1, 1, 63},   /* light blue */
+    {1, 63, 1},   /* light green */
+    {1, 63, 63},  /* light cyan */
+    {63, 1, 1},   /* light red */
+    {63, 1, 63},  /* light magenta */
+    {63, 63, 1},  /* yellow */
+    {63, 63, 63}  /* white */
+};
+
+void SetDAC(UByte color, PaletteColor rgb)
+{
+    OutByte(0x03c6, 0xff);
+    OutByte(0x03c8, color);
+    OutByte(0x03c9, rgb.red);
+    OutByte(0x03c9, rgb.green);
+    OutByte(0x03c9, rgb.blue);
+}
+
+void WritePalette(UByte startcolor, UByte palettesize, PaletteColor *palette)
+{
+    for (Size i = startcolor; i < palettesize; i++)
+    {
+        SetDAC(i, palette[i]);
+    }
+}
+
+void PrintPalette()
+{
+    Println("Palette:");
+    const Size twothirdway = sizeof(colors) / sizeof(colors[0]) / 2;
+    for (Size i = 0; i < sizeof(colors) / sizeof(colors[0]); i++)
+    {
+        SetPrintColor(i > twothirdway ? COLOR_BLACK : COLOR_WHITE, i);
+        Print(colornames[i]);
+        Println("      ");
+    }
+}
+
+Bool InitPalette()
+{
+
+    WritePalette(0, 17, colors);
+    return True;
+}
+
 // ---------------- SERIAL ---------------- //
 
 #define COM1 0x3f8
