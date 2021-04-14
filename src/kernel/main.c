@@ -20,10 +20,11 @@ void __attribute__((noreturn)) kmain() // multiboot_info_t info
     SetPrintColor(COLOR_WHITE, COLOR_CYAN);
     ClearScreen();
 
+    InitPalette();
+    PrintPalette(True);
+
     BRANCH(InitSerial(), Println("SERIAL INIT OK");, Println("SERIAL INIT FAIL"););
     BRANCH(InitInterrupts(), Println("INTERRUPT INIT OK");, Println("INTERRUPT INIT FAIL"););
-    InitPalette();
-    PrintPalette();
 
     SetPrintColor(COLOR_LIGHT_GREEN, COLOR_CYAN);
     Println("IDLE");

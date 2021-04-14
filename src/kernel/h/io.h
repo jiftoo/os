@@ -8,6 +8,6 @@ void SerialPrintln(Char *str);
 void SerialChar(Char ch);
 
 Bool InitPalette();
-void PrintPalette();
+void PrintPalette(Bool compact);
 
 Bool InitSerial();

@@ -32,3 +32,6 @@ void Print(Char *string);
 void Println(Char *string);
 void SetPrintColor(UByte foreground, UByte background);
 void ScreenColor(UByte color);
+
+UByte GetColor();
+void RestoreColor(UByte color);

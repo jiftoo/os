@@ -48,10 +48,10 @@ Char *colornames[] = {
 
 PaletteColor colors[16] = {
     {1, 1, 1},    /* black */
-    {10, 10, 42},   /* blue */
+    {10, 10, 42}, /* blue */
     {1, 32, 1},   /* green */
-    {0, 38, 55}, /* cyan */
-    {42, 0, 0}, /* red */
+    {0, 38, 55},  /* cyan */
+    {42, 0, 0},   /* red */
     {32, 1, 32},  /* magenta */
     {16, 16, 1},  /* brown */
     {32, 32, 32}, /* light gray */
@@ -82,22 +82,36 @@ void WritePalette(UByte startcolor, UByte palettesize, PaletteColor *palette)
     }
 }
 
-void PrintPalette()
+void PrintPalette(Bool compact)
 {
-    Println("Palette:");
-    const Size twothirdway = sizeof(colors) / sizeof(colors[0]) / 2;
-    for (Size i = 0; i < sizeof(colors) / sizeof(colors[0]); i++)
+    UByte clr = GetColor();
+    if (compact)
     {
-        SetPrintColor(i > twothirdway ? COLOR_BLACK : COLOR_WHITE, i);
-        Print(colornames[i]);
-        Println("      ");
+        for (Size i = 0; i < sizeof(colors) / sizeof(colors[0]); i++)
+        {
+            SetPrintColor(COLOR_WHITE, i);
+            Print("  ");
+        }
+        PutChar('\n');
     }
+    else
+    {
+        Println("Palette:");
+        const Size twothirdway = sizeof(colors) / sizeof(colors[0]) / 2;
+        for (Size i = 0; i < sizeof(colors) / sizeof(colors[0]); i++)
+        {
+            SetPrintColor(i > twothirdway ? COLOR_BLACK : COLOR_WHITE, i);
+            Print(colornames[i]);
+            Println("      ");
+        }
+    }
+    RestoreColor(clr);
 }
 
 Bool InitPalette()
 {
 
-    WritePalette(0, 17, colors);
+    WritePalette(0, 16, colors);
     return True;
 }
 

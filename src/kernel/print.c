@@ -127,3 +127,13 @@ void ScreenColor(UByte color)
         buffer[i].color |= color << 4;
     }
 }
+
+UByte GetColor()
+{
+    return color;
+}
+
+void RestoreColor(UByte clr)
+{
+    color = clr;
+}
