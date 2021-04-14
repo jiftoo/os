@@ -77,18 +77,48 @@ extern void LoadIDT();
 typedef struct
 {
     ULong gs, fs, es, ds;
-    ULong rdi, rsi, rbp, rbx, rdx, rcx, rax;
+    ULong rax, rbx, rcx, rdx, rbp, rsi, rdi, /*rsp*/ r8, r9, r10, r11, r12, r13, r14, r15;
     ULong intNum, errCode;
     ULong rip, cs, eflags, rsp, ss;
 } Registers;
 
-void clr(char buf[], Size len)
-{
-    for (UInt i = 0; i < len; i++)
-    {
-        buf[i] = 0;
-    }
-}
+Char *interruptMessages[] = {
+    "Division By Zero",       //0
+    "Debug",                  //1
+    "Non Maskable Interrupt", //2
+    "Breakpoint",             //3
+    "Into Detected Overflow", //4
+    "Out of Bounds",          //5
+    "Invalid Opcode",         //6
+    "No Coprocessor",         //7
+
+    "Double Fault",                //8
+    "Coprocessor Segment Overrun", //9
+    "Bad TSS",                     //10
+    "Segment Not Present",         //11
+    "Stack Fault",                 //12
+    "General Protection Fault",    //13
+    "Page Fault",
+    "Unknown Interrupt",
+
+    "Coprocessor Fault",
+    "Alignment Check",
+    "Machine Check",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+};
 
 #define STRNUMBAS(str, num, buf)      \
     Print(str);                       \
@@ -99,85 +129,56 @@ void clr(char buf[], Size len)
     Print(" b");                      \
     Println(IntToString(num, buf, 2));
 
-void FaultHandler(Registers *numbah) // 0-31 CPU isr
+#define STRNUMBASNO2(str, num, buf)   \
+    Print(str);                       \
+    Print(" - ");                     \
+    Print(IntToString(num, buf, 10)); \
+    Print(" 0x");                     \
+    Println(IntToString(num, buf, 16));
+
+void FaultHandler(Registers *regs) // 0-31 CPU isr
 {
-    Char buf[72];
-    STRNUMBAS("Int:  ", numbah->intNum, buf);
-    STRNUMBAS("Err:  ", numbah->errCode, buf);
-    STRNUMBAS("RIP:  ", numbah->rip, buf);
-    STRNUMBAS("CS:   ", numbah->cs, buf);
-    STRNUMBAS("Eflg: ", numbah->eflags, buf);
-    STRNUMBAS("RSP:  ", numbah->rsp, buf);
-    STRNUMBAS("SS:   ", numbah->ss, buf);
+    SetPrintColor(COLOR_WHITE, COLOR_LIGHT_RED);
+    ClearScreen();
+    ResetCursor();
+    Char buf[256];
+    Print(" ------ FATAL EXCEPTION: '");
+    Print(interruptMessages[regs->intNum]);
+    Println("' ------");
+    STRNUMBAS("Int:  ", regs->intNum, buf);
+    STRNUMBAS("Err:  ", regs->errCode, buf);
+    STRNUMBAS("RIP:  ", regs->rip, buf);
+    STRNUMBAS("CS:   ", regs->cs, buf);
+    STRNUMBAS("Eflg: ", regs->eflags, buf);
+    STRNUMBAS("RSP:  ", regs->rsp, buf);
+    STRNUMBAS("SS:   ", regs->ss, buf);
+
+    STRNUMBASNO2("R15:  ", regs->r15, buf);
+    STRNUMBASNO2("R14:  ", regs->r14, buf);
+    STRNUMBASNO2("R13:  ", regs->r13, buf);
+    STRNUMBASNO2("R12:  ", regs->r12, buf);
+    STRNUMBASNO2("R11:  ", regs->r11, buf);
+    STRNUMBASNO2("R10:  ", regs->r10, buf);
+    STRNUMBASNO2("R09:  ", regs->r9, buf);
+    STRNUMBASNO2("R08:  ", regs->r8, buf);
+    STRNUMBASNO2("RSI:  ", regs->rsi, buf);
+    STRNUMBASNO2("RDI:  ", regs->rdi, buf);
+    STRNUMBASNO2("RBP:  ", regs->rbp, buf);
+    STRNUMBASNO2("RDX:  ", regs->rdx, buf);
+    STRNUMBASNO2("RCX:  ", regs->rcx, buf);
+    STRNUMBASNO2("RBP:  ", regs->rbp, buf);
+    STRNUMBASNO2("RAX:  ", regs->rax, buf);
+
     PutChar('\n');
 
-    asm volatile("hlt");
-
-    // asm volatile("hlt");
-    // Char buf[256];
-    // clr(buf, 256);
-    // Println(IntToString(regs->intNum, buf, 10));
-    // clr(buf, 256);
-    // Println(IntToString(regs->errCode, buf, 10));
-    // clr(buf, 256);
-    // Println(IntToString(regs->cs, buf, 10));
-    // clr(buf, 256);
-    // Println(IntToString(regs->eflags, buf, 10));
-    // clr(buf, 256);
-    // clr(buf, 256);
-    // Println(IntToString(regs->ss, buf, 10));
-    // clr(buf, 256);
-    // Println(IntToString(regs->err_code, buf, 10));
-    // clr(buf, 256);
-
-    // Println(IntToString(regs->r15, buf, 10));
-    // clr(buf, 256);
-    // Println(IntToString(regs->r14, buf, 10));
-    // clr(buf, 256);
-    // Println(IntToString(regs->r13, buf, 10));
-    // clr(buf, 256);
-    // Println(IntToString(regs->r12, buf, 10));
-    // clr(buf, 256);
-    // Println(IntToString(regs->r11, buf, 10));
-    // clr(buf, 256);
-    // Println(IntToString(regs->r10, buf, 10));
-    // clr(buf, 256);
-    // Println(IntToString(regs->r9, buf, 10));
-    // clr(buf, 256);
-    // Println(IntToString(regs->r8, buf, 10));
-    // clr(buf, 256);
-    // Println(IntToString(regs->rsi, buf, 10));
-    // clr(buf, 256);
-    // Println(IntToString(regs->rdi, buf, 10));
-    // clr(buf, 256);
-    // Println(IntToString(regs->rbp, buf, 10));
-    // clr(buf, 256);
-    // Println(IntToString(regs->rdx, buf, 10));
-    // clr(buf, 256);
-    // Println(IntToString(regs->rcx, buf, 10));
-    // clr(buf, 256);
-    // Println(IntToString(regs->rbp, buf, 10));
-    // clr(buf, 256);
-    // Println(IntToString(regs->rax, buf, 10));
-    // clr(buf, 256);
+    while (1)
+        asm volatile("hlt");
 }
 
-void IrqHandler(Registers numbah) // 0-31 CPU isr
+void IrqHandler(Registers *regs) // 0-31 CPU isr // Registers numbah
 {
-    Print("IRQ: ");
-    Char buf[72];
-    Print(IntToString(numbah.errCode, buf, 10)); // Irq maps from here
-    Print("(");
-    Print(IntToString(numbah.intNum, buf, 10));
-    Println(")");
-
-    // Print("0x");
-    // Println(IntToString(numbah.rip, buf, 16));
-    // Print("0x");
-    // Println(IntToString(numbah.cs, buf, 16));
-    // Println("End");
     OutByte(0x20, 0x20);
-    if (numbah.errCode >= 8)
+    if (regs->errCode >= 8)
     {
         OutByte(0xA0, 0x20);
     }

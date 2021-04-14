@@ -3,7 +3,6 @@ use64
 section ".text"
 
 public LoadIDT
-public Crash
 
 extrn IDTPtr
 
@@ -16,65 +15,58 @@ extrn FaultHandler
 extrn IrqHandler
 
 macro PUSHAQ {
-    push rax
-    push rcx
-    push rdx
-    push rbx
-    push rbp
-    push rsi
-    push rdi
-
-    mov ax, ds     
-    push rax       
-    mov ax, es
-    push rax
-    push fs
-    push gs
-
-    ; change segment selector
-    mov ax, 0x10    ; set kernel data segment
-    mov ds, ax      ; 
-    mov es, ax      ; 
-    mov gs, ax
-    mov fs, ax
+    push   rax
+    push   rbx
+    push   rcx
+    push   rdx
+    push   rbp
+    push   rsi
+    push   rdi
+    ; push   rsp
+    push   r8
+    push   r9
+    push   r10
+    push   r11
+    push   r12
+    push   r13
+    push   r14
+    push   r15
 }
 
 macro POPAQ {
-    pop gs
-    pop fs
-    pop rax
-    mov es, ax      
-    pop rax         
-    mov ds, ax
-
-    pop rdi
-    pop rsi
-    pop rbp
-    pop rbx
-    pop rdx
-    pop rcx
-    pop rax
+    pop       r15
+    pop       r14
+    pop       r13
+    pop       r12
+    pop       r11
+    pop       r10
+    pop       r9
+    pop       r8
+    ; pop       rsp
+    pop       rdi
+    pop       rsi
+    pop       rbp
+    pop       rdx
+    pop       rcx
+    pop       rbx
+    pop       rax
 }
 
 isr_handler_stub:
     PUSHAQ
-
     mov rdi, rsp ; pass the argument to C funciton
     call FaultHandler
-
     POPAQ
-    add rsp, 8 ; i'm not sure about the size
+    add rsp, 16 ; i'm not sure about the size
     iretq
     ret
 
 irq_common_stub:
     PUSHAQ
-
     mov rdi, rsp ; pass the argument to C funciton
     call IrqHandler
-
     POPAQ
-    add rsp, 8 ;; ^
+    add rsp, 16 ;; ^
     iretq
     ret
 
@@ -83,20 +75,6 @@ irq_common_stub:
 LoadIDT:
         lidt [IDTPtr]
         ret
-
-Crash:
-        ; mov ax, 0x69
-        ; mov ds, ax
-        ; mov es, ax
-        ; mov fs, ax
-        ; mov gs, ax
-        ; mov rax, [error_message]
-        ; push rax
-        ; call Print
-        ; int 0x7 ; DF
-        cli
-        hlt
-
 
 public isr0
 public isr1

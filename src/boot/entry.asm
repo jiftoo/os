@@ -124,6 +124,7 @@ page_table_l3:
 	rb 4096
 page_table_l2:
 	rb 4096
+align 16
 stack_bottom:
 	rb 4096 * 4
 stack_top:

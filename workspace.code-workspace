@@ -3,21 +3,20 @@
 		{
 			"path": "."
 		}
-    ],
-    "settings": {
-        "workbench.colorTheme": "Palenight (Mild Contrast)",
-        "files.associations": {
-            "print.h": "c",
-            "multiboot.h": "c",
-            "types.h": "c",
-            "inttypes.h": "c",
-            "stdint.h": "c",
-            "string.h": "c",
-            "io.h": "c",
-            "stddef.h": "c",
-            "branch.h": "c",
-            "stdbool.h": "c"
-        }
-    },
-    
+	],
+	"settings": {
+		"workbench.colorTheme": "Palenight (Mild Contrast)",
+		"files.associations": {
+			"print.h": "c",
+			"multiboot.h": "c",
+			"types.h": "c",
+			"inttypes.h": "c",
+			"stdint.h": "c",
+			"string.h": "c",
+			"io.h": "c",
+			"stddef.h": "c",
+			"branch.h": "c",
+			"stdbool.h": "c"
+		}
+	}
 }

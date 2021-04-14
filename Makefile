@@ -9,7 +9,7 @@ x86_64_obj := $(x86_64_c_obj) $(x86_asm_obj)
 
 $(x86_64_c_obj): build/obj/%.o : src/%.c
 	@mkdir -p $(dir $@) && \
-	x86_64-elf-gcc -std=gnu99 -Werror=implicit-function-declaration -Wall -Wextra -c -I src/kernel/h -ffreestanding $(patsubst build/obj/%.o, src/%.c, $@) -o $@
+	x86_64-elf-gcc -mno-red-zone -std=gnu99 -Werror=implicit-function-declaration -Wall -Wextra -c -I src/kernel/h -ffreestanding $(patsubst build/obj/%.o, src/%.c, $@) -o $@
 
 $(x86_asm_obj): build/obj/%.o : src/%.asm
 	@mkdir -p $(dir $@) && \
